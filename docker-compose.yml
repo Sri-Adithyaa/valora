@@ -1,0 +1,61 @@
+# Local development stack for Valora Money.
+#   docker compose up -d db            -> PostgreSQL only (run backend/frontend from your shell)
+#   docker compose --profile app up -d -> PostgreSQL + API + market worker + frontend
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: valora-db
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-valora}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-change-me-locally}
+      POSTGRES_DB: ${POSTGRES_DB:-valora}
+    ports:
+      - "${POSTGRES_PORT:-5433}:5432"
+    volumes:
+      - valora_pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-valora} -d ${POSTGRES_DB:-valora}"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+
+  api:
+    profiles: ["app"]
+    build: ./backend
+    container_name: valora-api
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-valora}:${POSTGRES_PASSWORD:-change-me-locally}@db:5432/${POSTGRES_DB:-valora}
+    command: sh -c "alembic upgrade head && python -m app.seed --if-empty && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    ports:
+      - "8000:8000"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  worker:
+    profiles: ["app"]
+    build: ./backend
+    container_name: valora-worker
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://${POSTGRES_USER:-valora}:${POSTGRES_PASSWORD:-change-me-locally}@db:5432/${POSTGRES_DB:-valora}
+    command: python -m market_worker.scheduler
+    depends_on:
+      api:
+        condition: service_started
+
+  web:
+    profiles: ["app"]
+    build:
+      context: ./frontend
+      args:
+        VITE_API_PROXY: http://api:8000
+    container_name: valora-web
+    ports:
+      - "8080:80"
+    depends_on:
+      - api
+
+volumes:
+  valora_pgdata:
