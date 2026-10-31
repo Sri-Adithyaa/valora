@@ -1,0 +1,15 @@
+{
+  "Servers": {
+    "1": {
+      "Name": "Valora Money (local)",
+      "Group": "Valora",
+      "Host": "db",
+      "Port": 5432,
+      "MaintenanceDB": "valora",
+      "Username": "valora",
+      "PassFile": "/var/lib/pgadmin/pgpass",
+      "SSLMode": "prefer",
+      "Comment": "Simulated trading database. Tables: Schemas > public > Tables. Diagram: right-click 'valora' > ERD For Database."
+    }
+  }
+}

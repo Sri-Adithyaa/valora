@@ -1,6 +1,7 @@
 # Local development stack for Valora Money.
 #   docker compose up -d db            -> PostgreSQL only (run backend/frontend from your shell)
 #   docker compose --profile app up -d -> PostgreSQL + API + market worker + frontend
+#   docker compose up -d pgadmin       -> pgAdmin at http://localhost:5050, pre-connected to the database
 services:
   db:
     image: postgres:16-alpine
@@ -57,5 +58,28 @@ services:
     depends_on:
       - api
 
+  # Visual database browser. Desktop mode (no pgAdmin login) — for local use only, never expose it publicly.
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: valora-pgadmin
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@valora.money
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_PASSWORD:-change-me-locally}
+      PGADMIN_CONFIG_SERVER_MODE: "False"
+      PGADMIN_CONFIG_MASTER_PASSWORD_REQUIRED: "False"
+      PGADMIN_SERVER_JSON_FILE: /pgadmin4/servers.json
+      PGPASS_LINE: "db:5432:*:${POSTGRES_USER:-valora}:${POSTGRES_PASSWORD:-change-me-locally}"
+    # Write the password file from the environment at start-up (keeps the password out of the repo).
+    entrypoint: ["/bin/sh", "-c", "printf '%s\n' \"$$PGPASS_LINE\" > /var/lib/pgadmin/pgpass && chmod 600 /var/lib/pgadmin/pgpass && exec /entrypoint.sh"]
+    volumes:
+      - ./tools/pgadmin/servers.json:/pgadmin4/servers.json:ro
+      - valora_pgadmin:/var/lib/pgadmin
+    ports:
+      - "127.0.0.1:5050:80"
+    depends_on:
+      db:
+        condition: service_healthy
+
 volumes:
   valora_pgdata:
+  valora_pgadmin:

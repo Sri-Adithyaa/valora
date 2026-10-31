@@ -38,8 +38,8 @@ Then edit `.env`:
 docker compose up -d db          # PostgreSQL 16 on localhost:5433
 ```
 
-Connecting with pgAdmin: host `localhost`, port `5433`, database `valora`, and the user and password
-from `.env`.
+To browse the database visually, run `docker compose up -d pgadmin` and open <http://localhost:5050>.
+It comes pre-connected. See [database_visual_tour.md](database_visual_tour.md).
 
 ### 3. Backend: dependencies, migrations, seed data
 

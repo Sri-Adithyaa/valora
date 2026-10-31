@@ -95,6 +95,7 @@ valora/
 - [Setup guide](docs/setup_guide.md): installation, running, tests, production build,
   configuration
 - [Database schema](docs/database_schema.md): tables, constraints, triggers, ER diagram
+- [Visual database tour](docs/database_visual_tour.md): pgAdmin at <http://localhost:5050>, ERD, demo queries
 - [API documentation](docs/api_documentation.md): endpoints, error model, trade execution
 - [P&L methodology](docs/pnl_methodology.md): weighted-average cost, realized vs unrealized
 
