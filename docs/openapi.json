@@ -1,0 +1,3578 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "Valora Money API",
+  "description": "**Where Money Becomes an Asset.** Simulated multi-currency trading platform.\n\n> SIMULATION MODE \u2014 all balances and transactions are virtual. No real money is transferred.\n\nAuthenticate with `POST /api/auth/login` (sets an httpOnly cookie used by this page).",
+  "version": "1.0.0"
+ },
+ "paths": {
+  "/api/auth/register": {
+   "post": {
+    "tags": [
+     "Authentication"
+    ],
+    "summary": "Register",
+    "description": "Create an account and start a session. The next step is wallet creation.",
+    "operationId": "register_api_auth_register_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RegisterIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MeOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/auth/login": {
+   "post": {
+    "tags": [
+     "Authentication"
+    ],
+    "summary": "Login",
+    "description": "Log in with email **or** username. Sets an httpOnly session cookie.",
+    "operationId": "login_api_auth_login_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/LoginIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MeOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/auth/logout": {
+   "post": {
+    "tags": [
+     "Authentication"
+    ],
+    "summary": "Logout",
+    "description": "Revoke the current session server-side and clear the cookie.",
+    "operationId": "logout_api_auth_logout_post",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MessageOut"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/auth/me": {
+   "get": {
+    "tags": [
+     "Authentication"
+    ],
+    "summary": "Me",
+    "operationId": "me_api_auth_me_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MeOut"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/profile": {
+   "patch": {
+    "tags": [
+     "Profile"
+    ],
+    "summary": "Update Profile",
+    "description": "Edit permitted profile fields. Email and username are fixed identifiers.",
+    "operationId": "update_profile_api_profile_patch",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ProfileUpdateIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MeOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/profile/password": {
+   "post": {
+    "tags": [
+     "Profile"
+    ],
+    "summary": "Change Password",
+    "description": "Change password and sign out every other session.",
+    "operationId": "change_password_api_profile_password_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PasswordChangeIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MessageOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/wallet/create": {
+   "post": {
+    "tags": [
+     "Wallet"
+    ],
+    "summary": "Create Wallet",
+    "description": "Open the user's single active Valora Wallet and credit the configured virtual starting balance.",
+    "operationId": "create_wallet_api_wallet_create_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/WalletCreateIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/WalletOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/wallet": {
+   "get": {
+    "tags": [
+     "Wallet"
+    ],
+    "summary": "Get Wallet",
+    "operationId": "get_wallet_api_wallet_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/WalletOut"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/wallet/holdings": {
+   "get": {
+    "tags": [
+     "Wallet"
+    ],
+    "summary": "Get Holdings",
+    "description": "Every non-zero currency holding in the wallet, valued in the wallet's base currency.",
+    "operationId": "get_holdings_api_wallet_holdings_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/HoldingOut"
+         },
+         "type": "array",
+         "title": "Response Get Holdings Api Wallet Holdings Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/wallet/summary": {
+   "get": {
+    "tags": [
+     "Wallet"
+    ],
+    "summary": "Get Summary",
+    "operationId": "get_summary_api_wallet_summary_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PortfolioOut"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/wallet/fund-demo": {
+   "post": {
+    "tags": [
+     "Wallet"
+    ],
+    "summary": "Fund Demo",
+    "description": "Add **virtual** demo credit (no real money). Limited per request and per day; recorded in the ledger.",
+    "operationId": "fund_demo_api_wallet_fund_demo_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/FundDemoIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/FundingOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/wallet/fundings": {
+   "get": {
+    "tags": [
+     "Wallet"
+    ],
+    "summary": "List Fundings",
+    "operationId": "list_fundings_api_wallet_fundings_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/FundingOut"
+         },
+         "type": "array",
+         "title": "Response List Fundings Api Wallet Fundings Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/wallet/ledger": {
+   "get": {
+    "tags": [
+     "Wallet"
+    ],
+    "summary": "Ledger",
+    "description": "The wallet's immutable debit/credit audit trail.",
+    "operationId": "ledger_api_wallet_ledger_get",
+    "parameters": [
+     {
+      "name": "page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "default": 1,
+       "title": "Page"
+      }
+     },
+     {
+      "name": "page_size",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 100,
+       "minimum": 1,
+       "default": 25,
+       "title": "Page Size"
+      }
+     },
+     {
+      "name": "currency",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "minLength": 3,
+         "maxLength": 3
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Currency"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/LedgerPage"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/wallet/activity": {
+   "get": {
+    "tags": [
+     "Wallet"
+    ],
+    "summary": "Activity",
+    "description": "Recent trades, virtual funding and expired/cancelled quotes, newest first.",
+    "operationId": "activity_api_wallet_activity_get",
+    "parameters": [
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 50,
+       "minimum": 1,
+       "default": 15,
+       "title": "Limit"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/ActivityOut"
+         },
+         "title": "Response Activity Api Wallet Activity Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/market/currencies": {
+   "get": {
+    "tags": [
+     "Market"
+    ],
+    "summary": "Currencies",
+    "operationId": "currencies_api_market_currencies_get",
+    "parameters": [
+     {
+      "name": "include_inactive",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Include Inactive"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/CurrencyOut"
+         },
+         "title": "Response Currencies Api Market Currencies Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/market/pairs": {
+   "get": {
+    "tags": [
+     "Market"
+    ],
+    "summary": "Pairs",
+    "operationId": "pairs_api_market_pairs_get",
+    "parameters": [
+     {
+      "name": "search",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "maxLength": 40
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "description": "Code, currency name or country (e.g. 'euro')",
+       "title": "Search"
+      },
+      "description": "Code, currency name or country (e.g. 'euro')"
+     },
+     {
+      "name": "featured",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Featured"
+      }
+     },
+     {
+      "name": "currency",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "minLength": 3,
+         "maxLength": 3
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Currency"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/PairOut"
+         },
+         "title": "Response Pairs Api Market Pairs Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/market/rates": {
+   "get": {
+    "tags": [
+     "Market"
+    ],
+    "summary": "Rates",
+    "description": "Latest stored rate per pair with the change versus 24 hours earlier.",
+    "operationId": "rates_api_market_rates_get",
+    "parameters": [
+     {
+      "name": "search",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "maxLength": 40
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Search"
+      }
+     },
+     {
+      "name": "featured",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Featured"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "array",
+         "items": {
+          "$ref": "#/components/schemas/RateOut"
+         },
+         "title": "Response Rates Api Market Rates Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/market/pairs/lookup": {
+   "get": {
+    "tags": [
+     "Market"
+    ],
+    "summary": "Lookup",
+    "description": "Find the pair that trades FROM \u2192 TO, regardless of which side is the pair's base.",
+    "operationId": "lookup_api_market_pairs_lookup_get",
+    "parameters": [
+     {
+      "name": "from",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "minLength": 3,
+       "maxLength": 3,
+       "title": "From"
+      }
+     },
+     {
+      "name": "to",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "minLength": 3,
+       "maxLength": 3,
+       "title": "To"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PairOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/market/pairs/{pair_id}/history": {
+   "get": {
+    "tags": [
+     "Market"
+    ],
+    "summary": "Pair History",
+    "description": "Bucketed OHLC history from stored snapshots. `simulated` marks buckets containing demo data.",
+    "operationId": "pair_history_api_market_pairs__pair_id__history_get",
+    "parameters": [
+     {
+      "name": "pair_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Pair Id"
+      }
+     },
+     {
+      "name": "range",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "pattern": "^(1H|6H|1D|1W|1M|3M|1Y)$",
+       "default": "1D",
+       "title": "Range"
+      }
+     },
+     {
+      "name": "invert",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "description": "Return QUOTE/BASE instead of BASE/QUOTE",
+       "default": false,
+       "title": "Invert"
+      },
+      "description": "Return QUOTE/BASE instead of BASE/QUOTE"
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HistoryOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/market/status": {
+   "get": {
+    "tags": [
+     "Market"
+    ],
+    "summary": "Status",
+    "description": "Is market data Live, Delayed or Stale? Rates refresh every 1\u20132 minutes, never tick-by-tick.",
+    "operationId": "status_api_market_status_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MarketStatusOut"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/trade/quote": {
+   "post": {
+    "tags": [
+     "Trading"
+    ],
+    "summary": "Create Quote",
+    "description": "Lock a rate for QUOTE_VALIDITY_SECONDS. All amounts are computed server-side.",
+    "operationId": "create_quote_api_trade_quote_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/QuoteIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/QuoteOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/trade/quote/{quote_id}": {
+   "get": {
+    "tags": [
+     "Trading"
+    ],
+    "summary": "Get Quote",
+    "operationId": "get_quote_api_trade_quote__quote_id__get",
+    "parameters": [
+     {
+      "name": "quote_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Quote Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/QuoteOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/trade/execute": {
+   "post": {
+    "tags": [
+     "Trading"
+    ],
+    "summary": "Execute",
+    "description": "Settle a quote atomically. Repeating the request (same quote or same Idempotency-Key) never\nexecutes twice \u2014 it returns the original trade with `replayed: true`.",
+    "operationId": "execute_api_trade_execute_post",
+    "parameters": [
+     {
+      "name": "Idempotency-Key",
+      "in": "header",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "maxLength": 64
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Idempotency-Key"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ExecuteIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Idempotent replay of an already-settled quote",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/ExecuteOut"
+        }
+       }
+      }
+     },
+     "201": {
+      "description": "Trade executed"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/trade/history": {
+   "get": {
+    "tags": [
+     "Trading"
+    ],
+    "summary": "History",
+    "description": "The caller's executed trades, newest first, with filters.",
+    "operationId": "history_api_trade_history_get",
+    "parameters": [
+     {
+      "name": "page",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "minimum": 1,
+       "default": 1,
+       "title": "Page"
+      }
+     },
+     {
+      "name": "page_size",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 100,
+       "minimum": 1,
+       "default": 20,
+       "title": "Page Size"
+      }
+     },
+     {
+      "name": "currency",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "minLength": 3,
+         "maxLength": 3
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Currency"
+      }
+     },
+     {
+      "name": "side",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "pattern": "^(BUY|SELL)$"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Side"
+      }
+     },
+     {
+      "name": "status",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "pattern": "^(COMPLETED)$"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Status"
+      }
+     },
+     {
+      "name": "date_from",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date From"
+      }
+     },
+     {
+      "name": "date_to",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "anyOf": [
+        {
+         "type": "string",
+         "format": "date"
+        },
+        {
+         "type": "null"
+        }
+       ],
+       "title": "Date To"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TradePage"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/trade/{trade_id}": {
+   "get": {
+    "tags": [
+     "Trading"
+    ],
+    "summary": "Get Trade",
+    "description": "Full trade detail with its ledger entries and realized P&L.",
+    "operationId": "get_trade_api_trade__trade_id__get",
+    "parameters": [
+     {
+      "name": "trade_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Trade Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TradeDetailOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/portfolio": {
+   "get": {
+    "tags": [
+     "Portfolio"
+    ],
+    "summary": "Get Portfolio",
+    "description": "Holdings with average cost, market value, realized and unrealized P&L (weighted-average cost).",
+    "operationId": "get_portfolio_api_portfolio_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PortfolioOut"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/portfolio/performance": {
+   "get": {
+    "tags": [
+     "Portfolio"
+    ],
+    "summary": "Performance",
+    "description": "Portfolio value over time, rebuilt from the ledger and stored rate history.",
+    "operationId": "performance_api_portfolio_performance_get",
+    "parameters": [
+     {
+      "name": "range",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "pattern": "^(1D|1W|1M|3M|1Y|ALL)$",
+       "default": "1M",
+       "title": "Range"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PerformanceOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/portfolio/allocation": {
+   "get": {
+    "tags": [
+     "Portfolio"
+    ],
+    "summary": "Allocation",
+    "operationId": "allocation_api_portfolio_allocation_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AllocationOut"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/notifications": {
+   "get": {
+    "tags": [
+     "Notifications"
+    ],
+    "summary": "List Notifications",
+    "operationId": "list_notifications_api_notifications_get",
+    "parameters": [
+     {
+      "name": "unread_only",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Unread Only"
+      }
+     },
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 100,
+       "minimum": 1,
+       "default": 30,
+       "title": "Limit"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/NotificationList"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/notifications/{notification_id}/read": {
+   "patch": {
+    "tags": [
+     "Notifications"
+    ],
+    "summary": "Mark Read",
+    "operationId": "mark_read_api_notifications__notification_id__read_patch",
+    "parameters": [
+     {
+      "name": "notification_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Notification Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/NotificationOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/notifications/read-all": {
+   "post": {
+    "tags": [
+     "Notifications"
+    ],
+    "summary": "Mark All Read",
+    "operationId": "mark_all_read_api_notifications_read_all_post",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MessageOut"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/watchlist": {
+   "get": {
+    "tags": [
+     "Watchlist"
+    ],
+    "summary": "Get Watchlist",
+    "operationId": "get_watchlist_api_watchlist_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/PairOut"
+         },
+         "type": "array",
+         "title": "Response Get Watchlist Api Watchlist Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/watchlist/{pair_id}": {
+   "post": {
+    "tags": [
+     "Watchlist"
+    ],
+    "summary": "Add Favourite",
+    "operationId": "add_favourite_api_watchlist__pair_id__post",
+    "parameters": [
+     {
+      "name": "pair_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Pair Id"
+      }
+     }
+    ],
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MessageOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "Watchlist"
+    ],
+    "summary": "Remove Favourite",
+    "operationId": "remove_favourite_api_watchlist__pair_id__delete",
+    "parameters": [
+     {
+      "name": "pair_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Pair Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/MessageOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/api/health": {
+   "get": {
+    "tags": [
+     "System"
+    ],
+    "summary": "Health",
+    "operationId": "health_api_health_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "ActivityOut": {
+    "properties": {
+     "kind": {
+      "type": "string",
+      "enum": [
+       "TRADE",
+       "FUNDING",
+       "QUOTE"
+      ],
+      "title": "Kind"
+     },
+     "id": {
+      "type": "string",
+      "title": "Id"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "description": {
+      "type": "string",
+      "title": "Description"
+     },
+     "amount": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Amount"
+     },
+     "currency": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Currency"
+     },
+     "occurred_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Occurred At"
+     },
+     "link": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Link"
+     }
+    },
+    "type": "object",
+    "required": [
+     "kind",
+     "id",
+     "status",
+     "title",
+     "description",
+     "amount",
+     "currency",
+     "occurred_at",
+     "link"
+    ],
+    "title": "ActivityOut"
+   },
+   "AllocationOut": {
+    "properties": {
+     "base_currency": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "total_value": {
+      "type": "string",
+      "title": "Total Value"
+     },
+     "slices": {
+      "items": {
+       "$ref": "#/components/schemas/AllocationSlice"
+      },
+      "type": "array",
+      "title": "Slices"
+     }
+    },
+    "type": "object",
+    "required": [
+     "base_currency",
+     "total_value",
+     "slices"
+    ],
+    "title": "AllocationOut"
+   },
+   "AllocationSlice": {
+    "properties": {
+     "currency": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "value": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Value"
+     },
+     "allocation_pct": {
+      "type": "string",
+      "title": "Allocation Pct"
+     }
+    },
+    "type": "object",
+    "required": [
+     "currency",
+     "value",
+     "allocation_pct"
+    ],
+    "title": "AllocationSlice"
+   },
+   "CurrencyOut": {
+    "properties": {
+     "currency_id": {
+      "type": "integer",
+      "title": "Currency Id"
+     },
+     "currency_code": {
+      "type": "string",
+      "title": "Currency Code"
+     },
+     "currency_name": {
+      "type": "string",
+      "title": "Currency Name"
+     },
+     "currency_symbol": {
+      "type": "string",
+      "title": "Currency Symbol"
+     },
+     "country": {
+      "type": "string",
+      "title": "Country"
+     },
+     "decimals": {
+      "type": "integer",
+      "title": "Decimals"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     }
+    },
+    "type": "object",
+    "required": [
+     "currency_id",
+     "currency_code",
+     "currency_name",
+     "currency_symbol",
+     "country",
+     "decimals",
+     "status"
+    ],
+    "title": "CurrencyOut"
+   },
+   "ExecuteIn": {
+    "properties": {
+     "quote_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Quote Id"
+     }
+    },
+    "type": "object",
+    "required": [
+     "quote_id"
+    ],
+    "title": "ExecuteIn"
+   },
+   "ExecuteOut": {
+    "properties": {
+     "trade": {
+      "$ref": "#/components/schemas/TradeDetailOut"
+     },
+     "replayed": {
+      "type": "boolean",
+      "title": "Replayed"
+     },
+     "holdings": {
+      "items": {
+       "$ref": "#/components/schemas/HoldingOut"
+      },
+      "type": "array",
+      "title": "Holdings"
+     }
+    },
+    "type": "object",
+    "required": [
+     "trade",
+     "replayed",
+     "holdings"
+    ],
+    "title": "ExecuteOut"
+   },
+   "FundDemoIn": {
+    "properties": {
+     "amount": {
+      "anyOf": [
+       {
+        "type": "number",
+        "exclusiveMinimum": 0.0
+       },
+       {
+        "type": "string"
+       }
+      ],
+      "title": "Amount"
+     },
+     "currency": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 3,
+        "minLength": 3
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Currency"
+     }
+    },
+    "type": "object",
+    "required": [
+     "amount"
+    ],
+    "title": "FundDemoIn"
+   },
+   "FundingOut": {
+    "properties": {
+     "funding_id": {
+      "type": "integer",
+      "title": "Funding Id"
+     },
+     "reference": {
+      "type": "string",
+      "title": "Reference"
+     },
+     "currency": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "amount": {
+      "type": "string",
+      "title": "Amount"
+     },
+     "funding_type": {
+      "type": "string",
+      "title": "Funding Type"
+     },
+     "base_value": {
+      "type": "string",
+      "title": "Base Value"
+     },
+     "rate_to_base": {
+      "type": "string",
+      "title": "Rate To Base"
+     },
+     "note": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Note"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "funding_id",
+     "reference",
+     "currency",
+     "amount",
+     "funding_type",
+     "base_value",
+     "rate_to_base",
+     "note",
+     "created_at"
+    ],
+    "title": "FundingOut"
+   },
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "HistoryOut": {
+    "properties": {
+     "pair_id": {
+      "type": "integer",
+      "title": "Pair Id"
+     },
+     "symbol": {
+      "type": "string",
+      "title": "Symbol"
+     },
+     "display_symbol": {
+      "type": "string",
+      "title": "Display Symbol"
+     },
+     "inverted": {
+      "type": "boolean",
+      "title": "Inverted"
+     },
+     "range": {
+      "type": "string",
+      "title": "Range"
+     },
+     "includes_simulated": {
+      "type": "boolean",
+      "title": "Includes Simulated"
+     },
+     "points": {
+      "items": {
+       "$ref": "#/components/schemas/HistoryPoint"
+      },
+      "type": "array",
+      "title": "Points"
+     }
+    },
+    "type": "object",
+    "required": [
+     "pair_id",
+     "symbol",
+     "display_symbol",
+     "inverted",
+     "range",
+     "includes_simulated",
+     "points"
+    ],
+    "title": "HistoryOut"
+   },
+   "HistoryPoint": {
+    "properties": {
+     "time": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Time"
+     },
+     "open": {
+      "type": "string",
+      "title": "Open"
+     },
+     "high": {
+      "type": "string",
+      "title": "High"
+     },
+     "low": {
+      "type": "string",
+      "title": "Low"
+     },
+     "close": {
+      "type": "string",
+      "title": "Close"
+     },
+     "simulated": {
+      "type": "boolean",
+      "title": "Simulated"
+     }
+    },
+    "type": "object",
+    "required": [
+     "time",
+     "open",
+     "high",
+     "low",
+     "close",
+     "simulated"
+    ],
+    "title": "HistoryPoint"
+   },
+   "HoldingOut": {
+    "properties": {
+     "currency": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "quantity": {
+      "type": "string",
+      "title": "Quantity"
+     },
+     "average_cost": {
+      "type": "string",
+      "title": "Average Cost"
+     },
+     "cost_basis": {
+      "type": "string",
+      "title": "Cost Basis"
+     },
+     "latest_rate": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Latest Rate"
+     },
+     "current_value": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Current Value"
+     },
+     "unrealized_pnl": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Unrealized Pnl"
+     },
+     "unrealized_pnl_pct": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Unrealized Pnl Pct"
+     },
+     "price_change_24h_pct": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Price Change 24H Pct"
+     },
+     "realized_pnl": {
+      "type": "string",
+      "title": "Realized Pnl"
+     },
+     "allocation_pct": {
+      "type": "string",
+      "title": "Allocation Pct"
+     },
+     "updated_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Updated At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "currency",
+     "quantity",
+     "average_cost",
+     "cost_basis",
+     "latest_rate",
+     "current_value",
+     "unrealized_pnl",
+     "unrealized_pnl_pct",
+     "price_change_24h_pct",
+     "realized_pnl",
+     "allocation_pct",
+     "updated_at"
+    ],
+    "title": "HoldingOut"
+   },
+   "LedgerOut": {
+    "properties": {
+     "ledger_id": {
+      "type": "integer",
+      "title": "Ledger Id"
+     },
+     "currency": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "entry_type": {
+      "type": "string",
+      "title": "Entry Type"
+     },
+     "direction": {
+      "type": "string",
+      "title": "Direction"
+     },
+     "amount": {
+      "type": "string",
+      "title": "Amount"
+     },
+     "balance_after": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Balance After"
+     },
+     "reference": {
+      "type": "string",
+      "title": "Reference"
+     },
+     "trade_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Trade Id"
+     },
+     "funding_id": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Funding Id"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "ledger_id",
+     "currency",
+     "entry_type",
+     "direction",
+     "amount",
+     "balance_after",
+     "reference",
+     "trade_id",
+     "funding_id",
+     "created_at"
+    ],
+    "title": "LedgerOut"
+   },
+   "LedgerPage": {
+    "properties": {
+     "total": {
+      "type": "integer",
+      "title": "Total"
+     },
+     "page": {
+      "type": "integer",
+      "title": "Page"
+     },
+     "page_size": {
+      "type": "integer",
+      "title": "Page Size"
+     },
+     "items": {
+      "items": {
+       "$ref": "#/components/schemas/LedgerOut"
+      },
+      "type": "array",
+      "title": "Items"
+     }
+    },
+    "type": "object",
+    "required": [
+     "total",
+     "page",
+     "page_size",
+     "items"
+    ],
+    "title": "LedgerPage"
+   },
+   "LoginIn": {
+    "properties": {
+     "identifier": {
+      "type": "string",
+      "maxLength": 254,
+      "minLength": 3,
+      "title": "Identifier",
+      "description": "Email address or username"
+     },
+     "password": {
+      "type": "string",
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Password"
+     }
+    },
+    "type": "object",
+    "required": [
+     "identifier",
+     "password"
+    ],
+    "title": "LoginIn"
+   },
+   "MarketStatusOut": {
+    "properties": {
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "message": {
+      "type": "string",
+      "title": "Message"
+     },
+     "fx_session": {
+      "type": "string",
+      "title": "Fx Session"
+     },
+     "last_updated_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last Updated At"
+     },
+     "data_as_of": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Data As Of"
+     },
+     "provider": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Provider"
+     },
+     "is_simulated": {
+      "type": "boolean",
+      "title": "Is Simulated"
+     },
+     "provider_available": {
+      "type": "boolean",
+      "title": "Provider Available"
+     },
+     "last_successful_update_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last Successful Update At"
+     },
+     "update_interval_seconds": {
+      "type": "integer",
+      "title": "Update Interval Seconds"
+     },
+     "server_time": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Server Time"
+     }
+    },
+    "type": "object",
+    "required": [
+     "status",
+     "message",
+     "fx_session",
+     "last_updated_at",
+     "data_as_of",
+     "provider",
+     "is_simulated",
+     "provider_available",
+     "last_successful_update_at",
+     "update_interval_seconds",
+     "server_time"
+    ],
+    "title": "MarketStatusOut"
+   },
+   "MeOut": {
+    "properties": {
+     "user": {
+      "$ref": "#/components/schemas/UserOut"
+     },
+     "wallet": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/WalletBrief"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "unread_notifications": {
+      "type": "integer",
+      "title": "Unread Notifications"
+     }
+    },
+    "type": "object",
+    "required": [
+     "user",
+     "wallet",
+     "unread_notifications"
+    ],
+    "title": "MeOut"
+   },
+   "MessageOut": {
+    "properties": {
+     "message": {
+      "type": "string",
+      "title": "Message"
+     }
+    },
+    "type": "object",
+    "required": [
+     "message"
+    ],
+    "title": "MessageOut"
+   },
+   "NotificationList": {
+    "properties": {
+     "unread": {
+      "type": "integer",
+      "title": "Unread"
+     },
+     "items": {
+      "items": {
+       "$ref": "#/components/schemas/NotificationOut"
+      },
+      "type": "array",
+      "title": "Items"
+     }
+    },
+    "type": "object",
+    "required": [
+     "unread",
+     "items"
+    ],
+    "title": "NotificationList"
+   },
+   "NotificationOut": {
+    "properties": {
+     "notification_id": {
+      "type": "integer",
+      "title": "Notification Id"
+     },
+     "type": {
+      "type": "string",
+      "title": "Type"
+     },
+     "severity": {
+      "type": "string",
+      "title": "Severity"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "message": {
+      "type": "string",
+      "title": "Message"
+     },
+     "link": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Link"
+     },
+     "is_read": {
+      "type": "boolean",
+      "title": "Is Read"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "notification_id",
+     "type",
+     "severity",
+     "title",
+     "message",
+     "link",
+     "is_read",
+     "created_at"
+    ],
+    "title": "NotificationOut"
+   },
+   "PairOut": {
+    "properties": {
+     "pair_id": {
+      "type": "integer",
+      "title": "Pair Id"
+     },
+     "symbol": {
+      "type": "string",
+      "title": "Symbol"
+     },
+     "base": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "quote": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "spread": {
+      "type": "string",
+      "title": "Spread"
+     },
+     "min_trade_amount": {
+      "type": "string",
+      "title": "Min Trade Amount"
+     },
+     "is_featured": {
+      "type": "boolean",
+      "title": "Is Featured"
+     },
+     "is_favourite": {
+      "type": "boolean",
+      "title": "Is Favourite",
+      "default": false
+     }
+    },
+    "type": "object",
+    "required": [
+     "pair_id",
+     "symbol",
+     "base",
+     "quote",
+     "status",
+     "spread",
+     "min_trade_amount",
+     "is_featured"
+    ],
+    "title": "PairOut"
+   },
+   "PasswordChangeIn": {
+    "properties": {
+     "current_password": {
+      "type": "string",
+      "title": "Current Password"
+     },
+     "new_password": {
+      "type": "string",
+      "title": "New Password"
+     },
+     "confirm_password": {
+      "type": "string",
+      "title": "Confirm Password"
+     }
+    },
+    "type": "object",
+    "required": [
+     "current_password",
+     "new_password",
+     "confirm_password"
+    ],
+    "title": "PasswordChangeIn"
+   },
+   "PerformanceOut": {
+    "properties": {
+     "range": {
+      "type": "string",
+      "title": "Range"
+     },
+     "base_currency": {
+      "type": "string",
+      "title": "Base Currency"
+     },
+     "points": {
+      "items": {
+       "$ref": "#/components/schemas/PerformancePoint"
+      },
+      "type": "array",
+      "title": "Points"
+     }
+    },
+    "type": "object",
+    "required": [
+     "range",
+     "base_currency",
+     "points"
+    ],
+    "title": "PerformanceOut"
+   },
+   "PerformancePoint": {
+    "properties": {
+     "time": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Time"
+     },
+     "value": {
+      "type": "string",
+      "title": "Value"
+     },
+     "invested": {
+      "type": "string",
+      "title": "Invested"
+     },
+     "pnl": {
+      "type": "string",
+      "title": "Pnl"
+     }
+    },
+    "type": "object",
+    "required": [
+     "time",
+     "value",
+     "invested",
+     "pnl"
+    ],
+    "title": "PerformancePoint"
+   },
+   "PnlOut": {
+    "properties": {
+     "currency_id": {
+      "type": "integer",
+      "title": "Currency Id"
+     },
+     "quantity_disposed": {
+      "type": "string",
+      "title": "Quantity Disposed"
+     },
+     "average_cost": {
+      "type": "string",
+      "title": "Average Cost"
+     },
+     "cost_value": {
+      "type": "string",
+      "title": "Cost Value"
+     },
+     "realized_value": {
+      "type": "string",
+      "title": "Realized Value"
+     },
+     "profit_loss": {
+      "type": "string",
+      "title": "Profit Loss"
+     }
+    },
+    "type": "object",
+    "required": [
+     "currency_id",
+     "quantity_disposed",
+     "average_cost",
+     "cost_value",
+     "realized_value",
+     "profit_loss"
+    ],
+    "title": "PnlOut"
+   },
+   "PortfolioOut": {
+    "properties": {
+     "base_currency": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "total_value": {
+      "type": "string",
+      "title": "Total Value"
+     },
+     "total_cost_basis": {
+      "type": "string",
+      "title": "Total Cost Basis"
+     },
+     "total_funded": {
+      "type": "string",
+      "title": "Total Funded"
+     },
+     "overall_gain": {
+      "type": "string",
+      "title": "Overall Gain"
+     },
+     "overall_gain_pct": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Overall Gain Pct"
+     },
+     "realized_pnl": {
+      "type": "string",
+      "title": "Realized Pnl"
+     },
+     "unrealized_pnl": {
+      "type": "string",
+      "title": "Unrealized Pnl"
+     },
+     "daily_change": {
+      "type": "string",
+      "title": "Daily Change"
+     },
+     "daily_change_pct": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Daily Change Pct"
+     },
+     "currencies_held": {
+      "type": "integer",
+      "title": "Currencies Held"
+     },
+     "holdings": {
+      "items": {
+       "$ref": "#/components/schemas/HoldingOut"
+      },
+      "type": "array",
+      "title": "Holdings"
+     },
+     "last_market_update": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Last Market Update"
+     },
+     "market_status": {
+      "type": "string",
+      "title": "Market Status"
+     }
+    },
+    "type": "object",
+    "required": [
+     "base_currency",
+     "total_value",
+     "total_cost_basis",
+     "total_funded",
+     "overall_gain",
+     "overall_gain_pct",
+     "realized_pnl",
+     "unrealized_pnl",
+     "daily_change",
+     "daily_change_pct",
+     "currencies_held",
+     "holdings",
+     "last_market_update",
+     "market_status"
+    ],
+    "title": "PortfolioOut"
+   },
+   "ProfileUpdateIn": {
+    "properties": {
+     "full_name": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 120,
+        "minLength": 2
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Full Name"
+     },
+     "phone": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Phone"
+     },
+     "country": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 80,
+        "minLength": 2
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Country"
+     },
+     "base_currency": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 3,
+        "minLength": 3
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Base Currency"
+     }
+    },
+    "type": "object",
+    "title": "ProfileUpdateIn"
+   },
+   "QuoteIn": {
+    "properties": {
+     "from_currency": {
+      "type": "string",
+      "maxLength": 3,
+      "minLength": 3,
+      "title": "From Currency"
+     },
+     "to_currency": {
+      "type": "string",
+      "maxLength": 3,
+      "minLength": 3,
+      "title": "To Currency"
+     },
+     "amount": {
+      "anyOf": [
+       {
+        "type": "number",
+        "exclusiveMinimum": 0.0
+       },
+       {
+        "type": "string"
+       }
+      ],
+      "title": "Amount"
+     },
+     "amount_type": {
+      "type": "string",
+      "enum": [
+       "SOURCE",
+       "TARGET"
+      ],
+      "title": "Amount Type",
+      "description": "SOURCE: amount to spend (sell/exchange). TARGET: amount to receive (buy).",
+      "default": "SOURCE"
+     }
+    },
+    "type": "object",
+    "required": [
+     "from_currency",
+     "to_currency",
+     "amount"
+    ],
+    "title": "QuoteIn"
+   },
+   "QuoteOut": {
+    "properties": {
+     "quote_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Quote Id"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "side": {
+      "type": "string",
+      "title": "Side"
+     },
+     "amount_type": {
+      "type": "string",
+      "title": "Amount Type"
+     },
+     "pair_id": {
+      "type": "integer",
+      "title": "Pair Id"
+     },
+     "pair_symbol": {
+      "type": "string",
+      "title": "Pair Symbol"
+     },
+     "from_currency": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "to_currency": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "from_amount": {
+      "type": "string",
+      "title": "From Amount"
+     },
+     "to_amount": {
+      "type": "string",
+      "title": "To Amount"
+     },
+     "fee": {
+      "type": "string",
+      "title": "Fee"
+     },
+     "fee_rate": {
+      "type": "string",
+      "title": "Fee Rate"
+     },
+     "fee_currency": {
+      "type": "string",
+      "title": "Fee Currency"
+     },
+     "total_debit": {
+      "type": "string",
+      "title": "Total Debit"
+     },
+     "mid_rate": {
+      "type": "string",
+      "title": "Mid Rate"
+     },
+     "quoted_rate": {
+      "type": "string",
+      "title": "Quoted Rate"
+     },
+     "inverse_rate": {
+      "type": "string",
+      "title": "Inverse Rate"
+     },
+     "spread": {
+      "type": "string",
+      "title": "Spread"
+     },
+     "rate_recorded_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Rate Recorded At"
+     },
+     "rate_freshness": {
+      "type": "string",
+      "title": "Rate Freshness"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     },
+     "expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Expires At"
+     },
+     "validity_seconds": {
+      "type": "integer",
+      "title": "Validity Seconds"
+     },
+     "available_balance": {
+      "type": "string",
+      "title": "Available Balance"
+     },
+     "sufficient_balance": {
+      "type": "boolean",
+      "title": "Sufficient Balance"
+     }
+    },
+    "type": "object",
+    "required": [
+     "quote_id",
+     "status",
+     "side",
+     "amount_type",
+     "pair_id",
+     "pair_symbol",
+     "from_currency",
+     "to_currency",
+     "from_amount",
+     "to_amount",
+     "fee",
+     "fee_rate",
+     "fee_currency",
+     "total_debit",
+     "mid_rate",
+     "quoted_rate",
+     "inverse_rate",
+     "spread",
+     "rate_recorded_at",
+     "rate_freshness",
+     "created_at",
+     "expires_at",
+     "validity_seconds",
+     "available_balance",
+     "sufficient_balance"
+    ],
+    "title": "QuoteOut"
+   },
+   "RateOut": {
+    "properties": {
+     "pair_id": {
+      "type": "integer",
+      "title": "Pair Id"
+     },
+     "symbol": {
+      "type": "string",
+      "title": "Symbol"
+     },
+     "base": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "quote": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "spread": {
+      "type": "string",
+      "title": "Spread"
+     },
+     "min_trade_amount": {
+      "type": "string",
+      "title": "Min Trade Amount"
+     },
+     "is_featured": {
+      "type": "boolean",
+      "title": "Is Featured"
+     },
+     "is_favourite": {
+      "type": "boolean",
+      "title": "Is Favourite",
+      "default": false
+     },
+     "rate": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Rate"
+     },
+     "previous_rate": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Previous Rate"
+     },
+     "change": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Change"
+     },
+     "change_pct": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Change Pct"
+     },
+     "recorded_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Recorded At"
+     },
+     "provider": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Provider"
+     },
+     "rate_type": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Rate Type"
+     },
+     "freshness": {
+      "type": "string",
+      "title": "Freshness"
+     }
+    },
+    "type": "object",
+    "required": [
+     "pair_id",
+     "symbol",
+     "base",
+     "quote",
+     "status",
+     "spread",
+     "min_trade_amount",
+     "is_featured",
+     "rate",
+     "previous_rate",
+     "change",
+     "change_pct",
+     "recorded_at",
+     "provider",
+     "rate_type",
+     "freshness"
+    ],
+    "title": "RateOut"
+   },
+   "RegisterIn": {
+    "properties": {
+     "full_name": {
+      "type": "string",
+      "maxLength": 120,
+      "minLength": 2,
+      "title": "Full Name"
+     },
+     "username": {
+      "type": "string",
+      "title": "Username"
+     },
+     "email": {
+      "type": "string",
+      "format": "email",
+      "title": "Email"
+     },
+     "phone": {
+      "type": "string",
+      "title": "Phone"
+     },
+     "password": {
+      "type": "string",
+      "title": "Password"
+     },
+     "confirm_password": {
+      "type": "string",
+      "title": "Confirm Password"
+     },
+     "country": {
+      "type": "string",
+      "maxLength": 80,
+      "minLength": 2,
+      "title": "Country"
+     },
+     "base_currency": {
+      "type": "string",
+      "maxLength": 3,
+      "minLength": 3,
+      "title": "Base Currency"
+     }
+    },
+    "type": "object",
+    "required": [
+     "full_name",
+     "username",
+     "email",
+     "phone",
+     "password",
+     "confirm_password",
+     "country",
+     "base_currency"
+    ],
+    "title": "RegisterIn"
+   },
+   "TradeDetailOut": {
+    "properties": {
+     "trade_id": {
+      "type": "integer",
+      "title": "Trade Id"
+     },
+     "trade_reference": {
+      "type": "string",
+      "title": "Trade Reference"
+     },
+     "quote_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Quote Id"
+     },
+     "order_id": {
+      "type": "integer",
+      "title": "Order Id"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "side": {
+      "type": "string",
+      "title": "Side"
+     },
+     "pair_symbol": {
+      "type": "string",
+      "title": "Pair Symbol"
+     },
+     "from_currency": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "to_currency": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "from_amount": {
+      "type": "string",
+      "title": "From Amount"
+     },
+     "to_amount": {
+      "type": "string",
+      "title": "To Amount"
+     },
+     "executed_rate": {
+      "type": "string",
+      "title": "Executed Rate"
+     },
+     "mid_rate": {
+      "type": "string",
+      "title": "Mid Rate"
+     },
+     "fee": {
+      "type": "string",
+      "title": "Fee"
+     },
+     "fee_currency": {
+      "type": "string",
+      "title": "Fee Currency"
+     },
+     "trade_value_base": {
+      "type": "string",
+      "title": "Trade Value Base"
+     },
+     "base_currency": {
+      "type": "string",
+      "title": "Base Currency"
+     },
+     "executed_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Executed At"
+     },
+     "ledger_entries": {
+      "items": {
+       "$ref": "#/components/schemas/LedgerOut"
+      },
+      "type": "array",
+      "title": "Ledger Entries"
+     },
+     "pnl": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/PnlOut"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "quote_created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Quote Created At"
+     },
+     "quote_expires_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Quote Expires At"
+     },
+     "rate_recorded_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Rate Recorded At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "trade_id",
+     "trade_reference",
+     "quote_id",
+     "order_id",
+     "status",
+     "side",
+     "pair_symbol",
+     "from_currency",
+     "to_currency",
+     "from_amount",
+     "to_amount",
+     "executed_rate",
+     "mid_rate",
+     "fee",
+     "fee_currency",
+     "trade_value_base",
+     "base_currency",
+     "executed_at",
+     "ledger_entries",
+     "pnl",
+     "quote_created_at",
+     "quote_expires_at",
+     "rate_recorded_at"
+    ],
+    "title": "TradeDetailOut"
+   },
+   "TradeOut": {
+    "properties": {
+     "trade_id": {
+      "type": "integer",
+      "title": "Trade Id"
+     },
+     "trade_reference": {
+      "type": "string",
+      "title": "Trade Reference"
+     },
+     "quote_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Quote Id"
+     },
+     "order_id": {
+      "type": "integer",
+      "title": "Order Id"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "side": {
+      "type": "string",
+      "title": "Side"
+     },
+     "pair_symbol": {
+      "type": "string",
+      "title": "Pair Symbol"
+     },
+     "from_currency": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "to_currency": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "from_amount": {
+      "type": "string",
+      "title": "From Amount"
+     },
+     "to_amount": {
+      "type": "string",
+      "title": "To Amount"
+     },
+     "executed_rate": {
+      "type": "string",
+      "title": "Executed Rate"
+     },
+     "mid_rate": {
+      "type": "string",
+      "title": "Mid Rate"
+     },
+     "fee": {
+      "type": "string",
+      "title": "Fee"
+     },
+     "fee_currency": {
+      "type": "string",
+      "title": "Fee Currency"
+     },
+     "trade_value_base": {
+      "type": "string",
+      "title": "Trade Value Base"
+     },
+     "base_currency": {
+      "type": "string",
+      "title": "Base Currency"
+     },
+     "executed_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Executed At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "trade_id",
+     "trade_reference",
+     "quote_id",
+     "order_id",
+     "status",
+     "side",
+     "pair_symbol",
+     "from_currency",
+     "to_currency",
+     "from_amount",
+     "to_amount",
+     "executed_rate",
+     "mid_rate",
+     "fee",
+     "fee_currency",
+     "trade_value_base",
+     "base_currency",
+     "executed_at"
+    ],
+    "title": "TradeOut"
+   },
+   "TradePage": {
+    "properties": {
+     "total": {
+      "type": "integer",
+      "title": "Total"
+     },
+     "page": {
+      "type": "integer",
+      "title": "Page"
+     },
+     "page_size": {
+      "type": "integer",
+      "title": "Page Size"
+     },
+     "items": {
+      "items": {
+       "$ref": "#/components/schemas/TradeOut"
+      },
+      "type": "array",
+      "title": "Items"
+     }
+    },
+    "type": "object",
+    "required": [
+     "total",
+     "page",
+     "page_size",
+     "items"
+    ],
+    "title": "TradePage"
+   },
+   "UserOut": {
+    "properties": {
+     "user_id": {
+      "type": "integer",
+      "title": "User Id"
+     },
+     "full_name": {
+      "type": "string",
+      "title": "Full Name"
+     },
+     "username": {
+      "type": "string",
+      "title": "Username"
+     },
+     "email": {
+      "type": "string",
+      "title": "Email"
+     },
+     "phone": {
+      "type": "string",
+      "title": "Phone"
+     },
+     "country": {
+      "type": "string",
+      "title": "Country"
+     },
+     "base_currency": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "account_status": {
+      "type": "string",
+      "title": "Account Status"
+     },
+     "is_demo": {
+      "type": "boolean",
+      "title": "Is Demo"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "user_id",
+     "full_name",
+     "username",
+     "email",
+     "phone",
+     "country",
+     "base_currency",
+     "account_status",
+     "is_demo",
+     "created_at"
+    ],
+    "title": "UserOut"
+   },
+   "ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   },
+   "WalletBrief": {
+    "properties": {
+     "wallet_id": {
+      "type": "integer",
+      "title": "Wallet Id"
+     },
+     "wallet_reference": {
+      "type": "string",
+      "title": "Wallet Reference"
+     },
+     "wallet_name": {
+      "type": "string",
+      "title": "Wallet Name"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     },
+     "base_currency": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     }
+    },
+    "type": "object",
+    "required": [
+     "wallet_id",
+     "wallet_reference",
+     "wallet_name",
+     "status",
+     "created_at",
+     "base_currency"
+    ],
+    "title": "WalletBrief"
+   },
+   "WalletCreateIn": {
+    "properties": {
+     "wallet_name": {
+      "type": "string",
+      "maxLength": 60,
+      "minLength": 2,
+      "title": "Wallet Name"
+     },
+     "base_currency": {
+      "type": "string",
+      "maxLength": 3,
+      "minLength": 3,
+      "title": "Base Currency"
+     },
+     "country": {
+      "type": "string",
+      "maxLength": 80,
+      "minLength": 2,
+      "title": "Country"
+     },
+     "accept_terms": {
+      "type": "boolean",
+      "title": "Accept Terms"
+     }
+    },
+    "type": "object",
+    "required": [
+     "wallet_name",
+     "base_currency",
+     "country",
+     "accept_terms"
+    ],
+    "title": "WalletCreateIn"
+   },
+   "WalletOut": {
+    "properties": {
+     "wallet_id": {
+      "type": "integer",
+      "title": "Wallet Id"
+     },
+     "wallet_reference": {
+      "type": "string",
+      "title": "Wallet Reference"
+     },
+     "wallet_name": {
+      "type": "string",
+      "title": "Wallet Name"
+     },
+     "status": {
+      "type": "string",
+      "title": "Status"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     },
+     "base_currency": {
+      "$ref": "#/components/schemas/CurrencyOut"
+     },
+     "country": {
+      "type": "string",
+      "title": "Country"
+     },
+     "terms_accepted_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Terms Accepted At"
+     },
+     "holdings_count": {
+      "type": "integer",
+      "title": "Holdings Count"
+     },
+     "total_value": {
+      "type": "string",
+      "title": "Total Value"
+     }
+    },
+    "type": "object",
+    "required": [
+     "wallet_id",
+     "wallet_reference",
+     "wallet_name",
+     "status",
+     "created_at",
+     "base_currency",
+     "country",
+     "terms_accepted_at",
+     "holdings_count",
+     "total_value"
+    ],
+    "title": "WalletOut"
+   }
+  }
+ }
+}

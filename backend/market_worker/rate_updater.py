@@ -107,9 +107,14 @@ def run_update(db: Session, now: datetime | None = None, provider_override: prov
         log.error("rate update failed: %s", errors)
         return {"status": "FAILED", "errors": errors}
 
-    usd = dict(result.usd_rates)
-    usd["USD"] = Decimal(1)
     rows, rejected = [], []
+    usd = {}
+    for code, value in result.usd_rates.items():
+        if isinstance(value, Decimal) and value.is_finite() and value > 0:
+            usd[code] = value
+        else:
+            rejected.append(f"{code}: invalid value {value!r} from provider")
+    usd["USD"] = Decimal(1)
     max_jump = s.rate_max_jump_pct / 100
     for p in pairs:
         b, q = codes.get(p.base_currency_id), codes.get(p.quote_currency_id)
