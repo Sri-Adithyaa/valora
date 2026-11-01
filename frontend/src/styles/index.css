@@ -1,0 +1,73 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Manrope Variable", "Manrope", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+
+  /* Charcoal / grey scale */
+  --color-ink-950: #0b0e11;
+  --color-ink-900: #111418;
+  --color-ink-800: #1b2026;
+  --color-ink-700: #2a3038;
+  --color-ink-600: #3d444d;
+  --color-ink-500: #5f6772;
+  --color-ink-400: #8a919b;
+  --color-ink-300: #b7bcc3;
+  --color-ink-200: #dde0e4;
+  --color-ink-100: #eceee9;
+  --color-ink-50: #f5f6f3;
+
+  /* Money green — the single brand accent */
+  --color-money-950: #052916;
+  --color-money-900: #06402a;
+  --color-money-800: #075c36;
+  --color-money-700: #097443;
+  --color-money-600: #0b8a4f;
+  --color-money-500: #10b266;
+  --color-money-400: #3fcb87;
+  --color-money-300: #86e0b2;
+  --color-money-200: #c3f0d8;
+  --color-money-100: #e2f7eb;
+  --color-money-50: #f1fbf5;
+
+  /* Functional market colours */
+  --color-gain: #0b8a4f;
+  --color-loss: #c8372d;
+  --color-loss-50: #fdf1ef;
+  --color-loss-100: #fadcd7;
+  --color-warn: #b7791f;
+  --color-warn-50: #fdf6e7;
+
+  --shadow-card: 0 1px 2px rgb(17 20 24 / 0.04), 0 1px 1px rgb(17 20 24 / 0.02);
+  --shadow-pop: 0 12px 32px -8px rgb(17 20 24 / 0.18), 0 2px 6px rgb(17 20 24 / 0.06);
+
+  --animate-fade-in: fade-in 160ms ease-out;
+  --animate-slide-up: slide-up 200ms ease-out;
+  @keyframes fade-in { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes slide-up { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: none } }
+}
+
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    @apply bg-ink-50 font-sans text-ink-900 antialiased;
+    font-feature-settings: "cv11", "ss01";
+  }
+  ::selection { background: var(--color-money-200); }
+  :focus-visible { outline: 2px solid var(--color-money-500); outline-offset: 2px; border-radius: 4px; }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; }
+}
+
+@layer components {
+  .num { font-family: var(--font-mono); font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+  .card { @apply rounded-xl border border-ink-200/80 bg-white shadow-card; }
+  .label { @apply text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-500; }
+  .input {
+    @apply block w-full rounded-lg border border-ink-200 bg-white px-3 py-2.5 text-sm text-ink-900 placeholder:text-ink-400
+      transition-colors focus:border-money-500 focus:outline-none focus:ring-2 focus:ring-money-500/20
+      disabled:bg-ink-50 disabled:text-ink-500 aria-[invalid=true]:border-loss aria-[invalid=true]:ring-loss/15;
+  }
+  .table-head { @apply text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-500; }
+  .skeleton { @apply animate-pulse rounded bg-ink-100; }
+}
